@@ -1,0 +1,86 @@
+
+EC2 instance creation using terraform
+
+1.install terraform in windows machine.
+2.set the environment variables path for terraform.
+3.check terraform --version.
+4.install aws-cli in windows machine.
+5.set the environment variables path for aws-cli.
+6.check aws --version.
+7.create an IAM user in aws.
+8.Take note of that IAM user's "Acess key" and "Secret Access key"
+9.create a folder named "terraform_ec2".
+10.Inside that folder create a file named "main.tf" "providers.tf" "variables.tf" "outputs.tf"
+
+
+main.tf:
+
+resource "aws_instance" "my_ec2" {
+  count         = var.instance_count  
+  ami           = var.ami_id
+  instance_type = var.instance_type
+
+  tags = {
+    Name = "MyTerraformInstance-${count.index + 1}"
+  }
+}
+
+providers.tf:
+
+provider "aws" {
+  region = var.aws_region  
+}
+
+variables.tf:
+
+variable "aws_region" {
+  description = "AWS region where instances will be created"
+  type        = string
+  default     = "us-east-1"
+}
+
+variable "instance_count" {
+  description = "Number of EC2 instances to create"
+  type        = number
+  default     = 3
+}
+
+variable "instance_type" {
+  description = "Type of EC2 instance"
+  type        = string
+  default     = "t2.micro"
+}
+
+variable "ami_id" {
+  description = "AMI ID for the EC2 instance"
+  type        = string
+  default     = "ami-084568db4383264d4"  
+}
+
+outputs.tf:
+
+output "instance_public_ips" {
+  description = "Public IPs of EC2 instances"
+  value       = aws_instance.my_ec2[*].public_ip
+}
+
+output "instance_ids" {
+  description = "EC2 Instance IDs"
+  value       = aws_instance.my_ec2[*].id
+}
+
+
+
+PS C:\Users\Syedibrahim\terraform_ec2> aws configure
+AWS Access Key ID [None]: 
+AWS Secret Access Key [None]: 
+Default region name [None]: us-east-1
+Default output format [None]: 
+PS C:\Users\Syedibrahim\terraform_ec2> 
+
+terraform init
+terraform plan
+terraform apply  (in prompt give yes) (remember to give correct "ami-id" based on the regions)
+
+successfully created a ec2-instance in the N.virginia (us-east-1) region.
+	

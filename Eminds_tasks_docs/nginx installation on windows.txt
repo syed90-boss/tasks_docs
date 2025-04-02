@@ -1,0 +1,25 @@
+nginx installation on windows:
+
+document link - https://nginx.org/en/download.html
+
+steps:
+
+1. Download the "Mainline version", which is "nginx/Windows-1.27.4  pgp"
+
+2. Enter inside that zip folder.
+
+3. Choose the ngix application and click, in the prompt choose "Extract all" in the location "Downloads"
+
+4. Then create a folder named "nginx" in the path "C:\program files\nginx"
+
+5. copy the contents of the zip folder and paste in this path. (c:\program files\nginx)
+
+6. Then edit the environment variables path in both "admin" and "system varibales".
+
+7. Then check for nginx version from the command prompt from any path using the command "nginx -v".
+
+8. It will show the versions like "nginx version: nginx/1.27.4"
+
+9. Then in the path "c:\program files\nginx" run the command "start nginx"
+
+10 Then in chrome type "local host" , it will show the default "welcome to nginx" template.

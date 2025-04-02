@@ -1,0 +1,107 @@
+server {
+    listen 80;
+    server_name 172.168.30.1;
+
+    location / {
+        proxy_pass http://172.168.30.1:55555;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+
+worker1@ubuntu-04:/etc/nginx/sites-available$ curl http://172.168.30.1:55555
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /</pre>
+</body>
+</html>
+worker1@ubuntu-04:/etc/nginx/sites-available$ sudo nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+worker1@ubuntu-04:/etc/nginx/sites-available$
+
+
+
+server {
+    listen 80;
+    server_name 172.168.30.1;
+
+    location / {
+        proxy_pass http://172.168.30.1:55555;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+
+worker1@ubuntu-04:/etc/nginx/sites-available$
+
+
+-----------------------------------------------------------------------------------------------------------------
+
+worker1@ubuntu-04:/etc/nginx/sites-available$ curl http://172.168.30.1:55555/views -v
+*   Trying 172.168.30.1:55555...
+* TCP_NODELAY set
+* Connected to 172.168.30.1 (172.168.30.1) port 55555 (#0)
+> GET /views HTTP/1.1
+> Host: 172.168.30.1:55555
+> User-Agent: curl/7.68.0
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 302 Found
+< x-powered-by: Express
+< vary: Accept
+< Access-Control-Allow-Credentials: true
+< location: http://172.168.30.1:55555/api/auth/signin?domain=http://172.168.30.1:55555
+< content-type: text/plain; charset=utf-8
+< content-length: 100
+< date: Fri, 28 Mar 2025 09:54:29 GMT
+< connection: close
+<
+* Closing connection 0
+Found. Redirecting to http://172.168.30.1:55555/api/auth/signin?domain=http://172.168.30.1:55555worker1@ubuntu-04:/etc/nginx/sites-available$
+
+
+sudo journalctl -u nginx | grep "192.168.30.105:30128"
+
+
+-------------------------------------------------------------------------------------------------------------------------
+
+/var/log/nginx/access.log
+
+/etc/nginx/nginx.conf 
+
+or 
+
+/etc/nginx/sites-available/default
+
+-------------------------------------------------------------------------------------------------------------------------
+
+worker1@ubuntu-04:~$ curl -s http://192.168.30.18 | grep -oP 'http://\K[\d\.]+:\d+' | tee -a extracted_ip.txt
+192.168.30.105:30128
+192.168.30.105:30128
+worker1@ubuntu-04:~$ cat extracted_ip.txt
+192.168.30.105:30128
+192.168.30.105:30128
+192.168.30.105:30128
+192.168.30.105:30128
+192.168.30.105:30128
+192.168.30.105:30128
+192.168.30.105:30128
+192.168.30.105:30128
+worker1@ubuntu-04:~$
+
+
+
+
+
+
+
+

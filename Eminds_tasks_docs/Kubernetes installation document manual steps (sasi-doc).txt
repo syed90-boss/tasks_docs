@@ -1,0 +1,76 @@
+# Update the packages
+sudo apt update
+
+# Upgrade the packages
+sudo apt upgrade
+
+#  Deactivates all swap devices
+sudo swapoff -a
+
+# Disabling swap entries
+sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+# Enable kernel modules and configure sysctl
+
+sudo tee /etc/modules-load.d/containerd.conf <<EOF
+overlay
+br_netfilter
+EOF
+
+sudo modprobe overlay
+
+sudo modprobe br_netfilter
+
+sudo tee /etc/sysctl.d/kubernetes.conf <<EOF
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+net.ipv4.ip_forward = 1
+EOF
+
+sudo sysctl --system
+
+# Update once again the packages
+sudo apt-get update
+
+# apt-transport-https may be a dummy package; if so, you can skip that package
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+
+#Create a directory if keyrings are not present
+sudo mkdir -p /etc/apt/keyrings/
+
+# Download the public signing key for the Kubernetes package repositories
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+# This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+sudo apt-get update
+
+# Install kubelet kubeadm kubectl using this command
+sudo apt-get install -y kubelet kubeadm kubectl
+
+# Set the kubelet kubeadm kubectl held in their current installed state
+sudo apt-mark hold kubelet kubeadm kubectl
+
+# Initialize the Kubeadm 
+sudo kubeadm init
+
+# To start using your cluster, you need to run the following as a regular user:
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+
+# Execute this command to worker node to join worker to master node. It is specific to your case change the kubeadm join command.
+kubeadm join 192.168.0.118:6443 --token tn8mqr.4j3e48qwt088i6sh \
+        --discovery-token-ca-cert-hash sha256:e04e84e66fbf0f52a4c0ade76aff7abd328068cac69537927585919459aa17ec
+
+# To run the kubelet
+sudo systemctl enable --now kubelet
+
+#To Add network pod
+kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+
+
+
+

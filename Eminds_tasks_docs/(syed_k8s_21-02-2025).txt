@@ -1,0 +1,178 @@
+Here’s a structured guide for setting up a Kubernetes cluster with *one master node* and *one worker node*:  
+
+---
+
+# *Kubernetes Cluster Setup (1 Master, 1 Worker)*
+This guide sets up a Kubernetes cluster with:  
+* *1 Master Node* (Control plane)  
+* *1 Worker Node* (Joins the cluster)  
+
+---
+
+## *🔹 Step 1: Prepare Both Machines (Master & Worker)*
+Run these commands on *both* the master and worker nodes.
+
+### 1️⃣ Update and Upgrade the System*
+bash
+sudo apt update
+sudo apt upgrade -y
+
+👉 Example: Refreshing phone apps before installing new ones.
+
+---
+
+### *2️⃣ Disable Swap (Required for Kubernetes)*
+bash
+sudo swapoff -a
+sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+👉 Example: Removing a backup battery so Kubernetes always runs on the main battery.
+
+---
+
+### *3️⃣ Enable Required Kernel Modules*
+bash
+sudo tee /etc/modules-load.d/containerd.conf <<EOF
+overlay
+br_netfilter
+EOF
+
+bash
+sudo modprobe overlay
+sudo modprobe br_netfilter
+
+👉 Example: Turning on Wi-Fi and Bluetooth before using the internet.
+
+---
+
+### *4️⃣ Configure Network Settings*
+bash
+sudo tee /etc/sysctl.d/kubernetes.conf <<EOF
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+net.ipv4.ip_forward = 1
+EOF
+
+bash
+sudo sysctl --system
+
+👉 Example: Setting up traffic rules for a city.
+
+---
+
+### *5️⃣ Add Kubernetes Package Repository*
+bash
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+
+bash
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+bash
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+bash
+sudo apt-get update
+
+👉 Example: Adding a new app store before downloading an app.
+
+---
+
+### *6️⃣ Install Kubernetes Components*
+bash
+sudo apt-get install -y kubelet kubeadm kubectl
+
+bash
+sudo apt-mark hold kubelet kubeadm kubectl
+
+👉 Example: Installing a messaging app (WhatsApp) before sending messages.
+
+---
+
+## *🔹 Step 2: Configure the Master Node*
+Run these commands *only on the master node*.
+
+### *7️⃣ Initialize the Kubernetes Cluster*
+bash
+sudo kubeadm init
+
+👉 Example: Setting up a Wi-Fi router before connecting devices.
+
+📌 After running this command, Kubernetes will generate a *join command* like this:
+bash
+kubeadm join <MASTER_IP>:6443 --token <TOKEN> \
+    --discovery-token-ca-cert-hash sha256:<HASH>
+
+👉 Copy and save this command—you will need it for the worker node.
+
+---
+
+### *8️⃣ Set Up kubectl for the Master Node*
+bash
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+👉 Example: Saving Wi-Fi credentials so you don’t have to enter them every time.
+
+---
+
+### *9️⃣ Install a Network Plugin (Calico)*
+bash
+kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+
+👉 Example: Installing Google Maps so devices know where to send data.
+
+---
+
+## *🔹 Step 3: Configure the Worker Node*
+Run these commands *only on the worker node*.
+
+### *🔟 Join the Worker Node to the Cluster*
+Run the *join command* generated in Step 7 on the worker node:
+bash
+kubeadm join <MASTER_IP>:6443 --token <TOKEN> \
+    --discovery-token-ca-cert-hash sha256:<HASH>
+
+👉 Example: Connecting a new laptop to the same Wi-Fi network.
+
+---
+
+## *🔹 Step 4: Final Steps*
+Run these commands *only on the master node*.
+
+### *1️⃣1️⃣ Verify the Cluster*
+Check if the worker node has joined:
+bash
+kubectl get nodes
+
+✔️ Expected Output:
+
+NAME         STATUS   ROLES           AGE     VERSION
+master-node  Ready    control-plane   5m      v1.28.0
+worker-node  Ready    <none>          2m      v1.28.0
+
+👉 This confirms that:
+* The *master node is running*  
+* The *worker node is connected*  
+* *Kubernetes is fully functional* 🎉  
+
+---
+
+### *1️⃣2️⃣ Ensure Kubernetes Starts on Reboot*
+Run this on *both the master and worker nodes*:
+bash
+sudo systemctl enable --now kubelet
+
+👉 Example: Setting your Wi-Fi to auto-connect when you turn on your phone.
+
+---
+
+## *🎯 Final Output*
+* ✅ *Master node* controls the cluster.  
+* ✅ *Worker node* joins and runs applications.  
+* ✅ *Pods can talk to each other* via Calico networking.  
+* ✅ *Cluster is fully functional!* 🎉  
+
+Now you can deploy applications on Kubernetes! 🚀
+
+kubernetes installation notes (syed_k8s_21-02-2025)

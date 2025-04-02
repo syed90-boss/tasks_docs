@@ -1,0 +1,71 @@
+Jenkins installation:
+
+-> installation official documentation link - https://www.jenkins.io/doc/book/installing/linux/#debianubuntu
+
+--------------------------------------------------------------------------------------------------------------------
+
+steps:
+
+sudo apt update && sudo apt upgrade -y
+
+-> java installation: (java17 is required for Jenkins installation as dependencies)
+
+sudo apt install openjdk-17-jdk -y
+
+java -version
+
+-> Long term Release:
+
+-> Jenkins key:
+
+sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+
+-> Jenkins repository:
+
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+sudo apt-get update
+
+sudo apt-get install Jenkins
+
+sudo systemctl start jenkins
+
+sudo systemctl status Jenkins  (to start the service automatically on system reboot)
+
+sudo systemctl enable Jenkins
+
+-> chrome:
+
+<server-ip>:8080
+
+-> it will show the content "Getting started" "Unlock Jenkins"
+
+-> terminal:
+
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword  (note the password in a notepad)
+
+after entering the password, it will route to a page , which shows "customize Jenkins"
+
+in that page choose , "install suggested plugins"
+
+-> Create an Admin User:
+
+give username and password for Admin (For example "username: Admin" "Password: devops"
+
+-> It will a URL:
+ 
+for example (http://192.168.30.88:8080/)
+
+we can start using Jenkins in this URL.
+
+
+
+ 
+
+
+
+
+

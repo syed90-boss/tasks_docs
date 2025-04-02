@@ -1,0 +1,216 @@
+Kubernetes notes:
+
+How to access pod-A from pod-B with in same namespace:
+
+log into pod-B, 
+
+kubectl exec -it pod-b -- sh
+
+curl http://<service-name>:80
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Deployment and pod:
+
+Service → Exposes the application so others can access it.
+
+Deployment → Manages and runs the application by creating and maintaining pods.
+
+Example yaml:
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentication
+  namespace: twin-dev
+  labels:
+    app: authentication
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authentication
+  template:
+    metadata:
+      labels:
+        app: authentication
+    spec:
+      containers:
+      - name: authentication
+        image: RRR/rrr:NNN
+        command: [ "npm", "run", "server" ]
+        ports:
+        - containerPort: 6001
+      nodeSelector:
+        node-type: worker3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authentication
+  namespace: twin-dev
+spec:
+  type: ClusterIP
+  selector:
+    app: authentication
+  ports:
+    - protocol: TCP
+      port: 6001
+
+
+
+Explanation:
+
+Understanding Kubernetes Deployment and Service
+
+1. Deployment (Runs the Backend Server)
+
+This section creates and manages the backend authentication service inside Kubernetes.
+
+Deployment YAML Breakdown
+
+apiVersion: apps/v1
+kind: Deployment
+
+* apiVersion: apps/v1 → Using apps/v1 API because it's a Deployment.
+
+* kind: Deployment → We are creating a Deployment (which runs and manages multiple backend servers).
+
+metadata:
+  name: authentication
+  namespace: twin-dev
+  labels:
+    app: authentication
+
+* metadata → Basic details about this Deployment.
+
+* name: authentication → The name of this Deployment is authentication.
+
+* namespace: twin-dev → This Deployment belongs to the twin-dev namespace.
+
+* labels → A label is like a tag. We tag this Deployment with app: authentication so we can find it later.
+
+spec:
+  replicas: 1
+
+* spec: → Specification (what this Deployment should do).
+
+* replicas: 1 → Run only 1 pod (backend server).
+
+  selector:
+    matchLabels:
+      app: authentication
+
+* selector → Find pods that match a label.
+
+* matchLabels: app: authentication → This means "Find pods with app: authentication".
+
+  template:
+    metadata:
+      labels:
+        app: authentication
+
+* template → This defines how the pod should look when Kubernetes creates it.
+
+* labels: app: authentication → Every pod created by this Deployment will have the label app: authentication.
+
+    spec:
+      containers:
+      - name: authentication
+
+* spec: → Inside each pod, we need to run a container.
+
+* containers: → We define which container(s) should run inside the pod.
+
+- name: authentication → The container name is authentication.
+
+        image: RRR/rrr:NNN
+
+* image: RRR/rrr:NNN → This tells Kubernetes which Docker image to use.
+
+* Example: If RRR = myrepo, rrr = backend, and NNN = v1.2, then the full image would be:
+
+image: myrepo/backend:v1.2
+
+* This means Kubernetes will pull myrepo/backend:v1.2 from a container registry like Docker Hub or AWS ECR.
+
+        command: [ "npm", "run", "server" ]
+
+* This tells the container what command to run when it starts.
+
+"npm", "run", "server" → This starts the Node.js authentication service.
+
+        ports:
+        - containerPort: 6001
+
+* This opens port 6001 inside the container.
+
+* If the authentication server runs on port 6001, we need to expose it here.
+
+      nodeSelector:
+        node-type: worker3
+
+* nodeSelector: → This tells Kubernetes which worker node should run this pod.
+
+* node-type: worker3 → This pod will only run on nodes labeled as worker3.
+
+2. Service (Makes the Backend Accessible)
+
+* This section creates a stable way to access the authentication backend.
+
+* Service YAML Breakdown
+
+---
+apiVersion: v1
+kind: Service
+
+* apiVersion: v1 → Uses v1 API because it's a Service.
+
+* kind: Service → We are creating a Service (a way for other services to talk to the backend).
+
+metadata:
+  name: authentication
+  namespace: twin-dev
+
+* name: authentication → This Service will be called authentication.
+
+* namespace: twin-dev → This Service belongs to the twin-dev namespace.
+
+spec:
+  type: ClusterIP
+
+* spec: → Defines how this Service works.
+
+* type: ClusterIP → This Service is only accessible inside the Kubernetes cluster.
+
+* No external access (only other pods can call it).
+
+  selector:
+    app: authentication
+
+* selector: → Find pods to forward traffic to.
+
+* app: authentication → This means send requests to pods with app: authentication.
+
+  ports:
+    - protocol: TCP
+      port: 6001
+
+* ports: → Defines how traffic flows into the Service.
+
+* protocol: TCP → Uses TCP protocol.
+
+* port: 6001 → The Service listens on port 6001 and forwards traffic to the backend pod.
+
+3. How It Works Together
+
+* Deployment creates a backend authentication server running on port 6001 inside a pod.
+
+* Service provides a stable way to reach the backend.
+
+* Other applications can call this authentication backend using:
+
+curl http://authentication:6001
+
+* The Service forwards the request to the authentication pod.
+

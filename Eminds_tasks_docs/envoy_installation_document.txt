@@ -1,0 +1,20 @@
+envoy installation:
+
+1. wget -O- https://apt.envoyproxy.io/signing.key | sudo gpg --dearmor -o /etc/apt/keyrings/envoy-keyring.gpg
+
+This is the first command , can run like 
+
+wget -O- https://apt.envoyproxy.io/signing.key
+
+sudo gpg --dearmor -o /etc/apt/keyrings/envoy-keyring.gpg
+
+if the path is not created , manually create the path "/etc/apt/keyrings/envoy-keyring.gpg"
+Note: create the path only, not that file. file will be installed by that command itself.
+
+2. echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/envoy-keyring.gpg] https://apt.envoyproxy.io focal main" | sudo tee /etc/apt/sources.list.d/envoy.list
+
+3. sudo apt-get update
+ 
+4. sudo apt-get install envoy
+
+5. envoy --version 

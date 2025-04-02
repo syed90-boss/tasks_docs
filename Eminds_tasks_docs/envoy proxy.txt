@@ -1,0 +1,55 @@
+Document link: https://www.envoyproxy.io/docs/envoy/latest/start/install
+
+envoy proxy:
+
+manage network traffic 
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+Benefits of Using Envoy Proxy:
+
+Load Balancing – Distributes traffic evenly if there are multiple instances of a service.
+Traffic Routing – Sends requests to the right service automatically.
+Security – Can add authentication and encryption (TLS).
+Observability – Provides logs and monitoring to track network issues.
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+Envoy Proxy is a smart middleman that manages communication between services inside a system (Service-to-Service communication).
+
+Example of Envoy Proxy
+Inside your online store, different services need to talk to each other:
+
+frontend-service asks api-service for product data.
+
+api-service talks to database-service to get information.
+
+order-service communicates with payment-service.
+
+Instead of services talking directly, Envoy handles everything:
+Balances traffic if there are multiple copies of a service.
+Adds security (e.g., encryption, authentication).
+Provides monitoring for service-to-service communication.
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+syed@testmachines1:~$ wget -O- https://apt.envoyproxy.io/signing.key | sudo gpg --dearmor -o /etc/apt/keyrings/envoy-keyring.gpg
+[sudo] password for syed: --2025-03-27 15:53:08--  https://apt.envoyproxy.io/signing.key
+Resolving apt.envoyproxy.io (apt.envoyproxy.io)... 52.74.232.59, 52.76.120.174, 2406:da18:b3d:e202::65, ...
+Connecting to apt.envoyproxy.io (apt.envoyproxy.io)|52.74.232.59|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 3158 (3.1K) [application/vnd.apple.keynote]
+Saving to: ‘STDOUT’
+
+-                                 100%[==========================================================>]   3.08K  --.-KB/s    in 0s
+
+2025-03-27 15:53:08 (17.2 MB/s) - written to stdout [3158/3158]
+
+
+Sorry, try again.
+[sudo] password for syed:
+gpg: can't create '/etc/apt/keyrings/envoy-keyring.gpg': No such file or directory
+gpg: no valid OpenPGP data found.
+gpg: dearmoring failed: No such file or directory
+syed@testmachines1:~$
+

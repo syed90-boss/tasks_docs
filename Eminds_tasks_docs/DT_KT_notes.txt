@@ -1,0 +1,54 @@
+def build = currentBuild.previousSuccessfulBuild
+
+        if (build != null) {
+             echo "Previous Successful Build Number: ${build.number}"
+        } else {
+            echo "No previous successful build found."
+        }
+        def old_tag = "authen-jen-v1.${build.number}"
+        def new_tag = "authen-jen-v1.${currentBuild.number}"
+        echo "Last Worked Image: emindsregistry.ddnsfree.com/vc-edge:${old_tag}"
+        echo "Current Image: emindsregistry.ddnsfree.com/vc-edge:${new_tag}" 
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+s/RRR/emindsregistry.ddnsfree.com/g' /home/worker/jenkins/workspace/edge/edge-authentication/authentication.yaml"
+
+
+'https://github.com/PGuardians/em-edge-authentication.git'
+
+
+'https://github.com/PGuardians/em-dt-devops.git'
+
+dockerfiles, kube-yaml, env, 
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+UI:
+
+Map , location, object, sensor, update value and click update, run, will blink and also have the causal graph when click the drop down
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+6 microservices:
+
+1.Authentication.
+2.Authorization.
+3.Communication.
+4.Frontend.
+5.Gateway.
+6.Middleware.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Namespace:
+
+	twin
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Registry/repo:tag
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+

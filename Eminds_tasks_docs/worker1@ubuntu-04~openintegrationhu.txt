@@ -1,0 +1,52 @@
+worker1@ubuntu-04:~/openintegrationhub/dev-tools/docker-compose/src$ node setup/minikube && node setup/kubernetes && node setup/reset-rabbit && node setup/reset-mongo && node setup/iam && node setup/flows && node setup/build-test-component.js && node start
+* minikube v1.35.0 on Ubuntu 20.04
+
+X Exiting due to K8S_DOWNGRADE_UNSUPPORTED: Unable to safely downgrade existing Kubernetes v1.32.0 cluster to v1.22.4
+* Suggestion:
+
+    1) Recreate the cluster with Kubernetes 1.22.4, by running:
+
+    minikube delete
+    minikube start --kubernetes-version=v1.22.4
+
+    2) Create a second cluster with Kubernetes 1.22.4, by running:
+
+    minikube start -p minikube2 --kubernetes-version=v1.22.4
+
+    3) Use the existing cluster at version Kubernetes 1.32.0, by running:
+
+    minikube start --kubernetes-version=v1.32.0
+
+
+{ Error: Command failed: minikube start --kubernetes-version=v1.22.4 --mount
+    at checkExecSyncError (child_process.js:629:11)
+    at execSync (child_process.js:666:13)
+    at run (/home/worker1/openintegrationhub/dev-tools/docker-compose/src/setup/minikube.js:9:3)
+    at /home/worker1/openintegrationhub/dev-tools/docker-compose/src/setup/minikube.js:28:11
+    at Object.<anonymous> (/home/worker1/openintegrationhub/dev-tools/docker-compose/src/setup/minikube.js:32:3)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+  status: 106,
+  signal: null,
+  output: [ null, null, null ],
+  pid: 672168,
+  stdout: null,
+  stderr: null }
+/home/worker1/openintegrationhub/dev-tools/docker-compose/src/setup/kubernetes.js:14
+const cluster = kubeConfig.clusters.filter(
+                                    ^
+
+TypeError: Cannot read property 'filter' of null
+    at Object.<anonymous> (/home/worker1/openintegrationhub/dev-tools/docker-compose/src/setup/kubernetes.js:14:37)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Function.Module.runMain (internal/modules/cjs/loader.js:831:12)
+    at startup (internal/bootstrap/node.js:283:19)
+    at bootstrapNodeJSCore (internal/bootstrap/node.js:623:3)
+worker1@ubuntu-04:~/openintegrationhub/dev-tools/docker-compose/src$

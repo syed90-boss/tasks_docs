@@ -1,0 +1,71 @@
+nano editor:
+
+nano
+
+type something
+
+then press "ctrl+x" and "y" then , we haven't gave the file name yet so after hitting "y"
+we type the "file name" and press "enter"
+
+----------------------------------------------------------------------------------------------
+
+ctrl + A   = to goto the beginning of a line.
+
+ctrl + E   = to goto the end of a line.
+
+Ctrl + k   = to cut a line.
+
+ctrl + u   = to paste something inside nano.
+
+crtl + o   = to save without exiting the file or editor.
+
+ctrl + c   = to know where we are in the file.
+
+press "ESC"  then type "U" = to undo things.
+
+press "ESC"  then type "E" = to Re-do things.
+
+ctrl + w , then "enter text to search" then hit "enter"  =  to search for things/texts.
+then again do the same steps to goto next matching items.
+
+ctrl + Q , then "enter text to search" then hit "enter"  = searches words from backwards.
+
+----------------------------------------------------------------------------------------------
+
+can open file from any location using nano:
+
+consider we are in the path "/root/folder1/"
+
+nano /home/syed/file.txt
+
+so we can edit files with nano from any locations.
+
+----------------------------------------------------------------------------------------------
+
+How to delete everything inside a nano file:
+
+ctrl + 6  =  to set the mark
+
+then press "down-keys", after that press "ctrl + k" to delete everything inside a nano file.
+
+----------------------------------------------------------------------------------------------
+
+to replace words in nano:
+
+Let's go with an example:
+
+file1:
+one
+one 
+two 
+three
+
+so now if i want to replace the word "one" to "four" 
+ctrl + / , then it will prompt "search (to replace): <here type "one">" , then "enter",
+again it will prompt "Replace with: <type "four" here>,
+then it will prompt like:
+Replace this instace?
+Y yes   A All
+N no    ^c
+
+A = means all occurences.

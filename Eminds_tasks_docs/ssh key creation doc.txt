@@ -1,0 +1,62 @@
+ssh key creation:
+
+ssh-keygen -t rsa
+ssh-copy-id syed@192.168.30.83
+ssh syed@192.168.30.83
+
+-------------------------------------------------------------------------
+
+scp:
+ scp -r worker.yml machine1@192.168.30.85:/home/machine1/ansible
+
+-------------------------------------------------------------------------
+
+list remove command:
+sudo rm -fr /etc/apt/sources.list.d/kubernetes.list
+
+
+-------------------------------------------------------------------------
+
+user creation:
+
+sudo useradd -m arun
+sudo passwd arun
+sudo userdel -r arun
+su - arun
+sudo usermod -aG sudo arun    = to add root permission for a user.
+
+-------------------------------------------------------------------------
+
+copy a folder:
+
+cp -r ansible ansible2
+
+-------------------------------------------------------------------------
+
+scp:
+
+scp -r master@192.168.30.32:/home/master/ansible
+
+-------------------------------------------------------------------------
+
+ctrl + 0 = to reset the zoom size in a chrome page
+
+-------------------------------------------------------------------------
+
+ssh ufw allow commands:
+
+sudo ufw allow OpenSSH
+sudo ufw enable
+
+-------------------------------------------------------------------------
+
+command to find the public ip of a virtual machine:
+
+curl ipinfo.io/ip
+
+-------------------------------------------------------------------------
+
+command to use, when some installations are not completed in anible:
+
+sudo dpkg --configure -a
+	

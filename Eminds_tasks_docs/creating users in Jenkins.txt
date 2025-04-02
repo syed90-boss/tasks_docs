@@ -1,0 +1,76 @@
+-> creating users in Jenkins:
+
+Navigate to "Manage Jenkins" and in the "security" topic choose "users" and create users.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+-> create a job in Jenkins:
+
+* In the Jenkins Dashboard , click "New item" , it will route to next page and give the "item" "name" and choose "Freestyle project" and click "ok".
+
+* Then in the "configure" section , scroll down to "Add build step" and choose "Execute Shell" and give a simple command like "echo "Hello world!".
+
+* Then click "save" and click "Build now". It will execute that job. In the console output we can see the logs and output.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+-> Schedule a job using cron:
+
+Goto the job , then navigate to "configure" and in the enable build triggers , choose "build periodically" and give the cron as "H/2 * * * *", it will run that job every two minutes.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+-> Assigning a static ip for Jenkins URL:
+
+In the dashbard, navigate to "Manage Jenkins", in the "system configuration" choose "system" and in that scroll down and look for Jenkins URL. We can change the URL there.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+-> Giving shell command in the job:
+
+* In the "job-1" , navigate to "configure" and then in the "Execute shell" type "ls -lrta" and click "Build now" it will show what are the files in the directory (/var/lib/Jenkins/workspace/<job-name>)
+
+* If we click "Build now" for the second time, this pipeline will fail, because this pipeline is creating a folder named "syed_folder" in the path "/var/lib/Jenkins/workspace/job-1", so can't create another folder with same name. so this pipeline will fail. If we want this pipeline to be successful either we can give some other folder name or delete that existing folder using terminal.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+-> gonna create a pipeline:
+
+* created another two jobs named "job-2" and "job-3", in "job-2" gave "date" in "job-3" gave "df -h".
+* now gonna link these three jobs.
+* just if i trigger "job-1", i want the "job-3" to be triggerd.
+* Let's see how to do that. In "job-1" navigate to "configure" and scroll down and look for "Post-build Actions" and choose "Build other projects" , in that give the project name as "job-3" and can choose how to trigger that job.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+Triggering a job remotely using URL:
+
+Goto "job-1", in the "configure" there will be a section called "Triggers" and in that choose "Trigger builds remotely" and in the "Authentication Token" give "Jenkins", it will give a URL, if we trigger that URL, that job will be scheduled.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+Triggering a job remotely using cron:
+
+Goto "job-1", in the "configure" there will be a section called "Triggers" and in that choose "Build periodically" and give the required cron like "* * * * *", so now this job will be triggered for every minutes.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+-> creating users in Jenkins:
+
+Navigate to "Manage Jenkins" and in the "security" topic choose "users" and create users.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+-> Jenkins Agents:
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,17 @@
+echo "192.168.49.2 app-directory.example.com iam.example.com skm.example.com flow-repository.example.com auditlog.example.com metadata.example.com component-repository.example.com dispatcher-service.example.com webhooks.example.com attachment-storage-service.example.com data-hub.example.com ils.example.com web-ui.example.com" | sudo tee -a /etc/hosts
+
+
+
+192.168.49.2 app-directory.example.com
+192.168.49.2 iam.example.com
+192.168.49.2 skm.example.com
+192.168.49.2 flow-repository.example.com
+192.168.49.2 auditlog.example.com
+192.168.49.2 dispatcher-service.example.com
+192.168.49.2 metadata.example.com
+192.168.49.2 component-repository.example.com
+192.168.49.2 webhooks.example.com
+192.168.49.2 attachment-storage-service.example.com
+192.168.49.2 data-hub.example.com
+192.168.49.2 ils.example.com
+192.168.49.2 web-ui.example.com

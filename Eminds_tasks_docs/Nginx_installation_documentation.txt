@@ -1,0 +1,150 @@
+Nginx: 
+
+	- also called reverse proxy
+
+-------------------------------------------------------------------------------------------------------------------------
+
+installation steps:
+
+sudo apt update
+sudo apt install nginx -y
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
+
+/usr/share/nginx/html/   = default web root directory
+/var/www/html      	 = deployment path
+
+sudo systemctl restart nginx
+
+sudo nano /etc/nginx/nginx.conf   =  config file of nginx, can change the "web root" directory path here.
+
+-------------------------------------------------------------------------------------------------------------------------
+
+Configure a Custom Virtual Host:
+
+cd /etc/nginx/sites-available/
+
+nano mywebsite
+
+mywebsite:
+
+server {
+    listen 80;
+    server_name mywebsite.com;
+    root /var/www/mywebsite;
+    index index.html;
+}
+
+
+cd /var/www/
+sudo mkdir mywebsite
+cd mybwebsite
+
+nano index.html
+<h1>Hello welcome to my custom virtual host site!!</h1>
+
+
+
+sudo ln -s /etc/nginx/sites-available/mywebsite /etc/nginx/sites-enabled/             (linking the "mywebsite" folder path to "sites-enabled" path , because
+ 										      (in "sites-enabled" path only exposes the files)
+sudo nginx -t
+
+sudo systemctl restart nginx
+
+sudo nano /etc/hosts
+
+192.168.30.18  mywebsite.com
+
+terminal:
+
+curl http://mywebsite.com
+<h1>Hello welcome to my custom virtual host site!!</h1>
+
+
+
+chrome: (if it is a virtual box machine, have to try this in that machine's browser)
+
+mywebsite.com
+<h1>Hello welcome to my custom virtual host site!!</h1>
+
+-------------------------------------------------------------------------------------------------------------------------
+
+Self Signed SSL Certificate in nginx: (secure sockets layer)
+
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/selfsigned.key -out /etc/ssl/certs/selfsigned.crt
+
+-> enter the details prompted
+
+cd /etc/nginx/sites-available/
+
+sudo nano default
+
+default: (add this content)
+
+server {
+    listen 443 ssl;
+    server_name mywebsite.com;
+
+    ssl_certificate /etc/ssl/certs/selfsigned.crt;
+    ssl_certificate_key /etc/ssl/private/selfsigned.key;
+
+    location / {
+        root /usr/share/nginx/html;
+        index index.html;
+    }
+}
+
+sudo nginx -t   =  to test the Nginx configuration before applying any changes
+
+sudo systemctl restart nginx
+
+it doesn't work.
+
+so 
+
+sudo cp /etc/ssl/certs/mywebsite.crt /usr/local/share/ca-certificates/mywebsite.crt   = Copy the certificate to the trusted CA directory
+
+sudo update-ca-certificates 		= 	Update the system’s trusted certificates:
+
+Got the output:
+
+curl https://mywebsite.com   (working)
+
+
+-------------------------------------------------------------------------------------------------------------------------
+
+nginx re-routing:
+
+gonna route the traffic from "192.168.30.105" to "192.168.30.105:30128/views"
+
+terminal:
+
+cd /etc/nginx/sites-available
+
+sudo nano default
+
+default: (add this content)
+
+server {
+    listen 80;
+    server_name 192.168.30.105;
+
+    location / {
+        proxy_pass http://192.168.30.105:30128;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+
+
+browser:
+
+192.168.30.105:30128/views (working)
+
+
+
+
+
+

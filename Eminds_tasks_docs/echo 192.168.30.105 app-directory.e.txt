@@ -1,0 +1,13 @@
+echo "192.168.30.105 app-directory.example.com iam.example.com skm.example.com flow-repository.example.com auditlog.example.com metadata.example.com component-repository.example.com dispatcher-service.example.com webhooks.example.com attachment-storage-service.example.com data-hub.example.com ils.example.com web-ui.example.com" | sudo tee -a /etc/hosts
+
+
+curl --location 'http://192.168.30.105:80/login' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "username": "admin@openintegrationhub.com",
+  "password": "somestring"
+}'
+
+
+minikube start --memory 8192 --cpus 4
+

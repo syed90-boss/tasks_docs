@@ -1,0 +1,35 @@
+root@my-first-pod:/# ls /proc | grep '^[0-9]\+$' | wc -l
+10
+root@my-first-pod:/# ls /proc | grep '^[0-9]\+$'
+1
+118
+119
+29
+30
+31
+32
+33
+86
+root@my-first-pod:/#
+
+
+
+
+worker1@ubuntu-04:/proc$ kubectl exec -it my-first-pod -- /bin/bash
+root@my-first-pod:/#
+(command to go inside a pod in kubernetes)
+
+
+
+
+
+worker1@ubuntu-04:~$ kubectl exec -it my-first-pod -- /bin/bash
+root@my-first-pod:/# ls /proc | grep '^[0-9]\+$' | wc -l
+10
+root@my-first-pod:/#
+exit
+worker1@ubuntu-04:~$ kubectl exec -it my-first-pod -- ls /proc | grep '^[0-9]\+$' | wc -l
+0
+worker1@ubuntu-04:~$ kubectl exec -it my-first-pod -- sh -c "ls /proc | grep '^[0-9]\+$' | wc -l"
+10
+worker1@ubuntu-04:~$
