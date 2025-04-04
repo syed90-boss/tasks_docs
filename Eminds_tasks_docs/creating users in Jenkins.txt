@@ -63,6 +63,90 @@ Navigate to "Manage Jenkins" and in the "security" topic choose "users" and crea
 
 -> Jenkins Agents:
 
+* In the Jenkins console, navigate to "manage Jenkins" , in that there is a "system configuration" choose "Nodes", we can see the nodes.
+
+* we gonna need another instance , don't need Jenkins in that machine, but we need some dependencies of Jenkins like "java17" in the "slave" machine.
+
+* just make that "slave" machine "passwordless" from the "Jenkins" machine.
+
+* In the "slave" machine, create a directory named "jenkins-jobs", inside that folder it is empty now.
+
+* Navigate to the "Nodes" page in the "Jenkins page" and create a "New node" by clicking "New Node". It will open a pop-up and ask for details.
+
+* Fill the details like "Node name", choose "permanent agent" and click "create".
+
+* Then give the remote directory as "/home/ubuntu/jenkins-jobs" from the slave machine, give labels as "slave-1" , choose Launch method as "Launch agents via SSH" and give the "public ip" of the slave machine in the "host" field, then in the credentials , click "Add" , it will open a pop-up , in that pop-up
+choose "username with password"  and click "Add" in the "Host key verification strategy" choose "Manually trusted key verification stategy" and click "save"
+
+* The node named "syed_node" will be created.
+
+* Inside that "syed_node" see for logs and see the output as "This is a Unix agent
+Agent successfully connected and online"
+
+* If we are not sure, our node is connected with our server, we can check this by , running "ls" command in the slave server's path (/home/worker1/jenkins-jobs), if it is connected it will have "remoting and remoting.jar" files , which means our node is connected.
+
+ Let's run the "job-1" in "slave" machine:
+
+* In the "job-1"'s shell add the command "docker images", before before building this command , make sure "docker" is installed in the "slave" machine, otherwise it will throw error.
+
+* In the "job-1" navigate to "configure" and in "General" choose "Restrict where this project can run" and choose "slave-1" then click "apply" and "save".
+
+* After this if we build the "job-1" it will successfully run in the "slave" and shows the docker images output.
+
+* Also in the path "/home/worker1/jenkins-jobs" there will be folder called "workspace" will be created.
+
+Now we have successfully worked on "Jenkins agents".
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+Jenkins to automatically pull code from a GitHub repository whenever changes are pushed:
+
+GitHub en sontha key - "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" (Expiry in 7 days)
+
+* Create a job named "GitHub-Demo-Job" and choose "Freestyle project" and click "ok"
+
+* In that job's configuration, scroll to "source code management" , select "git" , in the repository URL have to give like 
+  "https://github.com/syed90-boss/jenkins-git.git" , then in credentials click "Add" , choose "Jenkins" and select "username and password" and "Enter the
+  GitHub username and PAT and click "Add" and choose that created one.
+
+* In the Build triggers section, choose "GitHub hook trigger for GITScm polling" and in the shell give "git pull origin main
+  echo "Code Pulled Successfully!" , after that click "save". Now manually click "Build now" and see the output.
+
+* Now goto GitHub repo's settings , choose "webhooks" and click "Add webhook", then in the payload URL give the URL of ngrok which is
+  "https://16dd-182-78-81-138.ngrok-free.app/<github-webhook>/" have to add "github-webhook" at the end of the URL, then in content type choose
+  "application/json" , then choose "Enable SSL verification", then choose "just the push event" and click "Add webhook", so webhook will be created.
+   
+* so now if we change the codes in our GitHub repo, the "Github-Demo-Job" job in Jenkins will be triggered automatically and it will build that job.
+
+  successfully completed this!!
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+ngrok installation:
+
+document link - https://ngrok.com/downloads/linux
+
+curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc \
+>   | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null \
+>   && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" \
+>   | sudo tee /etc/apt/sources.list.d/ngrok.list \
+>   && sudo apt update \
+>   && sudo apt install ngrok
+
+ngrok --version
+
+ngrok config add-authtoken <token>   (get the token from the ngrok UI)
+
+ngrok http 8080  (after running this command , it will open a cmd interface and will give the URL "https://16dd-182-78-81-138.ngrok-free.app"
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
 
 
 

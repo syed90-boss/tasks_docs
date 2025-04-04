@@ -1,0 +1,60 @@
+s3fs syed-data /home/worker1/my_minio_bucket \
+-o passwd_file=/home/worker1/.passwd-s3fs \
+-o url=http://192.168.30.69:9000 \
+-o use_path_request_style
+
+----------------------------------------------------------------------------------------------------------------------------------------
+TwinARC pro:
+
+mount minio bucket as a filesystem directory in Linux:
+
+sudo apt update
+
+sudo apt install s3fs
+
+echo "minio_access_key:minio_secret_key" > ~/.passwd-s3fs
+
+chmod 600 ~/.passwd-s3fs 
+
+mkdir my_minio_bucket  ("~/" means "home" directory)
+
+sudo chmod 755 my_minio_bucket
+
+s3fs <minio-bucket-name> /home/worker1/my_minio_bucket \
+-o passwd_file=/home/worker1/.passwd-s3fs \
+-o url=http://192.168.30.69:9000 \			
+-o use_path_request_style
+
+	-> The third line is "Minio client URL"
+
+df -h | grep my_minio_bucket   (if it doesn't work , use this "findmnt | grep my_minio_bucket")
+
+ls my_minio_bucket
+
+echo "syed-data  /home/worker1/my_minio_bucket  fuse.s3fs _netdev,passwd_file=/home/worker1/.passwd-s3fs,url=http://192.168.30.69:9000,use_path_request_style 0 0" | sudo tee -a /etc/fstab
+
+sudo mount -a   (mount all filesystems listed in /etc/fstab that are not currently mounted.)
+
+To unmount the "minio bucket":
+
+fusermount -u /mnt/minio
+
+or
+
+umount /mnt/minio
+
+(so here after if we add anything here, it will be reflected in our miniobucket)
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+sftp sftpserver@192.168.30.69 
+
+lpwd                       (local present working directory)
+
+get /home/sftpserver/local/file.csv /home/syed
+
+
+
+
+
+ 

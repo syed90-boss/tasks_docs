@@ -1,3 +1,9 @@
 c260a4adc2034f4197c4929a1adb044d
 
 http://192.168.30.88:8080/
+
+trigger URL:
+
+JENKINS_URL/job/MyFirstJob/build?token=TOKEN_NAME
+
+http://192.168.30.88:8080/job/MyFirstJob/build?token=jenkins

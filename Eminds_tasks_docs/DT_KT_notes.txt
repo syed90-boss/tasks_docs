@@ -51,4 +51,8 @@ Registry/repo:tag
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
+sftp sftpserver@192.168.30.69 
 
+lpwd                       (local present working directory)
+
+get /home/sftpserver/local/file.csv .

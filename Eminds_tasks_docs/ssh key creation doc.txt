@@ -59,4 +59,16 @@ curl ipinfo.io/ip
 command to use, when some installations are not completed in anible:
 
 sudo dpkg --configure -a
+
+-------------------------------------------------------------------------
+
+Docker installation commands:
+
+sudo apt update -y
+
+sudo apt install docker.io
+
+sudo usermod -aG docker $USER
+
+newgrp docker
 	
