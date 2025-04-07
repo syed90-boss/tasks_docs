@@ -9,6 +9,8 @@ ssh syed@192.168.30.83
 scp:
  scp -r worker.yml machine1@192.168.30.85:/home/machine1/ansible
 
+ scp -r * machine1@192.168.30.85:/home/machine1/ansible   = to send all the files in that current directory
+
 -------------------------------------------------------------------------
 
 list remove command:
@@ -71,4 +73,11 @@ sudo apt install docker.io
 sudo usermod -aG docker $USER
 
 newgrp docker
+
+-------------------------------------------------------------------------
+
+docker commands:
+
+docker push emindsguardians/twin-sim:4nodes
+
 	
