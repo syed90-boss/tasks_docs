@@ -1,0 +1,150 @@
+Kubernetes Deployment Hands-on Guide:
+
+--> A deployment manages multiple replicas and handles rolling updates
+
+1. Prerequisites 
+
+Ensure you have Minikube or a Kubernetes cluster installed and running. 
+
+Check if your node is running: 
+
+worker1@ubuntu-04:~$ kubectl get nodes 
+NAME       STATUS   ROLES           AGE   VERSION 
+minikube   Ready    control-plane   19h   v1.32.0 
+
+ 
+ worker1@ubuntu-04:~$ kubectl create namespace dev-team 
+namespace/dev-team created 
+
+ 
+worker1@ubuntu-04:~$ kubectl get namespaces 
+NAME              STATUS   AGE 
+default           Active   19h 
+dev-team          Active   13s 
+kube-node-lease   Active   19h 
+kube-public       Active   19h 
+kube-system       Active   19h 
+
+ 
+ worker1@ubuntu-04:~$ sudo nano nginx-deployment.yaml 
+
+ 
+
+worker1@ubuntu-04:~$ cat nginx-deployment.yaml 
+
+apiVersion: apps/v1 
+
+kind: Deployment 
+
+metadata: 
+
+  name: nginx-deployment 
+
+  namespace: dev-team 
+
+  labels: 
+
+    app: nginx 
+
+spec: 
+
+  replicas: 3  # Number of pod replicas 
+
+  selector: 
+
+    matchLabels: 
+
+      app: nginx 
+
+  template: 
+
+    metadata: 
+
+      labels: 
+
+        app: nginx 
+
+    spec: 
+
+      containers: 
+
+        - name: nginx 
+
+          image: nginx:latest 
+
+          ports: 
+
+            - containerPort: 80 
+
+ 
+worker1@ubuntu-04:~$ kubectl apply -f nginx-deployment.yaml 
+deployment.apps/nginx-deployment created 
+
+ 
+worker1@ubuntu-04:~$ kubectl get deployments -n dev-team 
+NAME               READY   UP-TO-DATE   AVAILABLE   AGE 
+nginx-deployment   3/3     3            3           72s 
+
+ 
+ worker1@ubuntu-04:~$ kubectl get pods -n dev-team 
+NAME                              READY   STATUS    RESTARTS   AGE 
+nginx-deployment-96b9d695-9gwrl   1/1     Running   0          97s 
+nginx-deployment-96b9d695-bpm8b   1/1     Running   0          98s 
+nginx-deployment-96b9d695-r9b4j   1/1     Running   0          97s 
+
+ 
+worker1@ubuntu-04:~$ kubectl expose deployment nginx-deployment --type=NodePort --port=80 --name=nginx-service -n dev-team 
+service/nginx-service exposed 
+
+ 
+ worker1@ubuntu-04:~$ kubectl get svc -n dev-team 
+NAME            TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE 
+nginx-service   NodePort   10.99.183.20   <none>        80:30440/TCP   115s 
+
+ 
+worker1@ubuntu-04:~$ minikube ip 
+192.168.49.2 
+
+ 
+worker1@ubuntu-04:~$ curl http://192.168.49.2:30440 
+<!DOCTYPE html> 
+<html> 
+<head> 
+<title>Welcome to nginx!</title> 
+<style> 
+html { color-scheme: light dark; } 
+body { width: 35em; margin: 0 auto; 
+font-family: Tahoma, Verdana, Arial, sans-serif; } 
+</style> 
+</head> 
+<body> 
+<h1>Welcome to nginx!</h1> 
+<p>If you see this page, the nginx web server is successfully installed and 
+working. Further configuration is required.</p> 
+ 
+<p>For online documentation and support please refer to 
+<a href="http://nginx.org/">nginx.org</a>.<br/> 
+Commercial support is available at 
+<a href="http://nginx.com/">nginx.com</a>.</p> 
+ 
+<p><em>Thank you for using nginx.</em></p> 
+</body> 
+</html> 
+
+ 
+ worker1@ubuntu-04:~$ kubectl scale deployment nginx-deployment --replicas=5 -n dev-team 
+deployment.apps/nginx-deployment scaled 
+
+ 
+worker1@ubuntu-04:~$ kubectl get pods -n dev-team 
+NAME                              READY   STATUS              RESTARTS   AGE 
+nginx-deployment-96b9d695-4skpg   0/1     ContainerCreating   0          11s 
+nginx-deployment-96b9d695-9gwrl   1/1     Running             0          7m29s 
+nginx-deployment-96b9d695-bpm8b   1/1     Running             0          7m30s 
+nginx-deployment-96b9d695-fw4sz   0/1     ContainerCreating   0          11s 
+nginx-deployment-96b9d695-r9b4j   1/1     Running             0          7m29s 
+
+ 
+worker1@ubuntu-04:~$ kubectl delete namespace dev-team 
+namespace "dev-team" deleted 
+ 

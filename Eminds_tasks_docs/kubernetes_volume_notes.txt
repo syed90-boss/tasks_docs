@@ -1,0 +1,234 @@
+Kubernetes volume:
+
+--> using one pod (one container inside that pod)
+
+--> using one pod (two containers inside that pod)
+
+------------------------------------------------------------------------------------------------------------------
+
+Let's see using "one pod (one container inside that pod):
+
+Here’s a combined, clean hands-on guide showing both ways of verifying volume data:
+
+🌟 Kubernetes Volume — Hands-On Guide
+
+🎯 Goal:
+
+Create a pod with a volume
+
+Write a message into the volume
+
+Verify it in two ways:
+
+* Using kubectl exec + cat
+
+* By going inside the pod manually
+
+✅ Step 1: Create a Pod with Volume
+
+Create a file named pod-volume.yaml:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: volume-demo
+spec:
+  containers:
+  - name: writer
+    image: busybox
+    command: ["sh", "-c", "echo Hello Syed! > /data/message.txt && sleep 3600"]
+    volumeMounts:
+    - name: my-vol
+      mountPath: /data
+  volumes:
+  - name: my-vol
+    emptyDir: {}
+
+This creates:
+
+* A busybox pod
+
+* A volume mounted at /data
+
+* It writes Hello Syed! into /data/message.txt
+
+✅ Step 2: Apply the Pod
+
+kubectl apply -f pod-volume.yaml
+
+Wait a few seconds for it to start running:
+
+kubectl get pods
+
+Make sure volume-demo is in the Running state.
+
+✅ Step 3: Verify the Volume Content
+🧪 Method 1: Read the file directly using kubectl exec
+
+kubectl exec volume-demo -- cat /data/message.txt
+
+Expected output:
+
+Hello Syed!
+
+🧪 Method 2: Go inside the pod and explore manually
+
+kubectl exec -it volume-demo -- sh
+
+Once inside:
+
+cd /data
+ls
+cat message.txt
+
+Output:
+
+Hello Syed!
+
+Now exit:
+
+
+exit
+
+✅ That's it! You’ve successfully created a pod with a volume and verified the data both directly and interactively.
+
+-------------------------------------------------------------------------------------------------------------------------
+
+yaml explanation:
+
+🧾 YAML Explained: volume-demo Pod with Volume
+
+apiVersion: v1
+
+👉 This says we're using the core Kubernetes API version 1, which is standard for basic objects like Pods.
+
+kind: Pod
+
+👉 We're creating a Pod — the smallest deployable unit in Kubernetes, which holds one or more containers.
+
+metadata:
+  name: volume-demo
+
+👉 This gives the Pod a name — volume-demo.
+You’ll use this name to refer to the Pod later (like checking logs, getting status, etc).
+
+spec:
+
+👉 This starts the specification of how the pod should behave.
+
+🔹 containers: — What's running inside the Pod
+
+  containers:
+  - name: writer
+
+👉 This Pod has 1 container named writer.
+
+    image: busybox
+
+👉 The container runs the BusyBox image, a tiny Linux shell environment, perfect for simple tasks.
+
+    command: ["sh", "-c", "echo Hello Syed! > /data/message.txt && sleep 3600"]
+
+🧠 What this line does:
+
+Runs sh shell
+
+Executes the command:
+
+echo Hello Syed! > /data/message.txt && sleep 3600
+
+This writes "Hello Syed!" into a file inside /data
+
+Then it sleeps for 1 hour (3600 seconds) to keep the pod alive
+
+🔸 volumeMounts: — Attach storage to the container
+
+    volumeMounts:
+    - name: my-vol
+      mountPath: /data
+
+👉 This tells Kubernetes:
+
+Mount the volume named my-vol
+
+Attach it inside the container at the folder /data
+
+So the file is saved inside this mounted path
+
+🔸 volumes: — Define the storage
+
+  volumes:
+  - name: my-vol
+    emptyDir: {}
+
+👉 This creates a volume called my-vol, and it’s of type emptyDir.
+
+🧺 What is emptyDir?
+
+* It's an empty folder created on the node when the Pod starts
+
+* It lasts only as long as the Pod lives
+
+*  	Perfect for temporary storage and sharing data between containers
+
+🧠 Summary in Plain English:
+📦 You’re creating a pod with 1 container that:
+
+Uses BusyBox
+
+Writes Hello Syed! to a file at /data/message.txt
+
+The /data folder is a mounted volume (emptyDir)
+
+You can later read this file from inside or outside the container!
+
+-----------------------------------------------------------------------------------------------------
+
+Let's see using "one pod (two container inside that pod):
+
+
+yaml:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: volume-demo
+spec:
+  containers:
+  - name: writer
+    image: busybox
+    command: ["sh", "-c", "echo Hello Syed! > /data/message.txt && sleep 3600"]
+    volumeMounts:
+    - name: my-vol
+      mountPath: /data
+  - name: reader
+    image: busybox
+    command: ["sh", "-c", "sleep 5 && cat /data/message.txt && sleep 3600"]
+    volumeMounts:
+    - name: my-vol
+      mountPath: /data
+  volumes:
+  - name: my-vol
+    emptyDir: {}
+
+
+--> Now the pod named "volume-demo" has two conatiners , named "writer" and "reader".
+
+--> to go inside "writer" container, 
+ 
+     kubectl exec -it volume-demo -c writer -- sh
+
+--> inside that path "/data", can see the file "message.txt", inside that it has the message "Hello Syed!".
+
+--> we can change this "message.txt" content to anything like "Hello Syed Ibrahim!"
+
+--> Now Let's go inside the "reader" container,
+
+     kubectl exec -it volume-demo -c reader -- sh
+
+--> inside the path "/data", can see the file "message.txt", inside that now it has the message "Hello Syed Ibrahim!".
+
+
+
+
+

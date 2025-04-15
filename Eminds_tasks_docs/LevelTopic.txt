@@ -1,0 +1,6 @@
+Level	Topic
+🟢 Beginner	Pods, Deployments, Services
+🟡 Intermediate	Ingress, Volumes, ConfigMaps, Secrets
+🟠 Advanced	Auto-scaling, Rolling Updates, Helm
+🔵 Expert	Operators, Custom Resources, CI/CD with Jenkins, GitOps
+

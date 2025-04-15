@@ -1,0 +1,217 @@
+Kubernetes Namespace Hands-on Guide 
+
+1. Prerequisites 
+
+Before starting, ensure you have Minikube or a Kubernetes cluster installed and running. 
+
+Check if your node is running: 
+
+kubectl get node 
+  
+
+Example Output: 
+
+NAME       STATUS   ROLES           AGE   VERSION 
+minikube   Ready    control-plane   18h   v1.32.0 
+  
+
+2. Create a Namespace 
+
+Create a namespace called dev-team: 
+
+kubectl create namespace dev-team 
+
+or 
+
+--> it can be written in script.
+  
+Verify namespace creation: 
+
+kubectl get namespaces 
+  
+
+Example Output: 
+
+NAME              STATUS   AGE 
+default           Active   18h 
+dev-team          Active   27s 
+kube-node-lease   Active   18h 
+kube-public       Active   18h 
+kube-system       Active   18h 
+  
+
+3. Deploy an Nginx Pod in the Namespace 
+
+Create the YAML file 
+
+Open a new file to define the pod: 
+
+nano nginx-pod.yaml 
+  
+
+Add the following content: 
+
+apiVersion: v1 
+kind: Pod 
+metadata: 
+  name: nginx-pod 
+  namespace: dev-team 
+  labels: 
+    app: nginx 
+spec: 
+  containers: 
+    - name: nginx 
+      image: nginx 
+      ports: 
+        - containerPort: 80 
+  
+
+Save and exit the file. 
+
+Apply the YAML file: 
+
+kubectl apply -f nginx-pod.yaml 
+  
+
+Verify pod status: 
+
+kubectl get pods -n dev-team 
+  
+
+Example Output: 
+
+NAME        READY   STATUS    RESTARTS   AGE 
+nginx-pod   1/1     Running   0          16s 
+  
+
+ 
+
+4. Expose the Pod as a Service 
+
+using yaml:
+
+nginx-service.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: dev-team
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80       # Service port
+      targetPort: 80 # Pod containerPort
+      nodePort: 31591 # Optional: define custom NodePort
+  type: NodePort
+
+
+or 
+
+Expose the pod using a NodePort service: (using commands)
+
+kubectl expose pod nginx-pod --type=NodePort --port=80 --name=nginx-service -n dev-team 
+  
+
+Verify the service: 
+
+kubectl get svc -n dev-team 
+  
+
+Example Output: 
+
+NAME            TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE 
+nginx-service   NodePort   10.107.77.16   <none>        80:32078/TCP   19s 
+  
+
+ 
+
+5. Access the Service 
+
+Get Minikube IP: 
+
+minikube ip 
+  
+
+Example Output: 
+
+192.168.49.2 
+  
+
+Access the Service using curl: 
+
+curl http://192.168.49.2:32078 
+  
+
+Example Output: 
+
+<!DOCTYPE html> 
+<html> 
+<head> 
+<title>Welcome to nginx!</title> 
+<style> 
+html { color-scheme: light dark; } 
+body { width: 35em; margin: 0 auto; 
+font-family: Tahoma, Verdana, Arial, sans-serif; } 
+</style> 
+</head> 
+<body> 
+<h1>Welcome to nginx!</h1> 
+<p>If you see this page, the nginx web server is successfully installed and 
+working. Further configuration is required.</p> 
+</body> 
+</html> 
+  
+
+ 
+
+6. Cleanup 
+
+If you want to delete the namespace and all resources inside it: 
+
+kubectl delete namespace dev-team 
+ 
+----------------------------------------------------------------------------------------------------------------------
+
+if we are going to use a single yaml file for both "namespace" and "service":
+
+yaml:
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev-team
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  namespace: dev-team
+  labels:
+    app: nginx
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+      ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: dev-team
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 31591  # Optional custom port
+  type: NodePort
+
+
+ 

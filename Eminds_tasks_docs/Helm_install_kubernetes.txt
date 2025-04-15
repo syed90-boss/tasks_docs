@@ -1,0 +1,134 @@
+Helm:
+
+Helm = Package manager for Kubernetes
+
+Chart = A package that contains all the necessary Kubernetes files
+
+Use case = Install complex apps easily (like WordPress, MySQL, etc.)
+
+Command = helm install <name> <chart>
+
+---------------------------------------------------------------------------------------------------------------------------
+
+steps:
+
+--> Documentation link (https://helm.sh/docs/intro/install/) using script.
+
+--> Helm installation
+
+    curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+    chmod 700 get_helm.sh
+    ./get_helm.sh
+
+    helm version
+
+
+--> adding "Helm repo"
+
+    helm repo add bitnami https://charts.bitnami.com/bitnami
+
+--> then installing "nginx"
+
+    helm install my-nginx bitnami/nginx
+
+(ngixn installed successfully)
+
+--> to uninstall that "nginx" package
+
+    helm uninstall my-nginx	
+
+--> to remove helm from the machine
+ 
+    sudo rm $(which helm)
+   
+    sudo rm -rf ~/.cache/helm ~/.config/helm ~/.local/share/helm
+
+
+---------------------------------------------------------------------------------------------------------------------------
+
+helm installation steps:
+
+--> Documentation link (https://helm.baltorepo.com/stable/debian/).
+
+    curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -
+     
+    sudo apt-get install apt-transport-https --yes
+
+    echo "deb https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+   
+    sudo apt-get update
+  
+    sudo apt-get install helm
+
+    echo 'export PATH=$PATH:/usr/sbin' >> ~/.bashrc
+    source ~/.bashrc
+    /usr/sbin/helm version
+
+---------------------------------------------------------------------------------------------------------------------------
+
+helm version
+
+helm create my-nginx
+
+cd my-nginx
+
+cd ..
+
+helm install my-nginx ./my-nginx
+
+kubectl get pods
+
+kubectl get svc
+
+helm uninstall my-nginx
+
+---------------------------------------------------------------------------------------------------------------------------
+
+    helm version
+
+--> helm chart repository
+ 
+    helm repo add bitnami https://charts.bitnami.com/bitnami
+
+--> Update Helm Repositories
+
+    helm repo update
+
+--> Search for the Chart (WordPress)
+
+    helm search repo bitnami/wordpress
+
+--> Install the WordPress Chart
+
+    helm install my-wordpress bitnami/wordpress
+
+--> Check the Status of the Installation
+
+    helm list
+
+--> Access the WordPress Application  (this "kubectl..." command will be displayed in previous output)
+
+    export WORDPRESS_PASSWORD=$(kubectl get secret --namespace default my-wordpress-wordpress -o jsonpath="{.data.wordpress-password}" | base64 --decode)
+    echo $WORDPRESS_PASSWORD
+
+    it will display:
+
+    export WORDPRESS_USERNAME=admin
+    echo $WORDPRESS_USERNAME
+
+--> To access WordPress, we need to get the external IP of the WordPress service:
+
+    kubectl get svc --namespace default -w my-wordpress-wordpress
+
+--> Upgrade the Release (Optional)
+
+    helm upgrade my-wordpress bitnami/wordpress
+
+--> Uninstall the Release
+
+    helm uninstall my-wordpress
+
+
+
+    
+

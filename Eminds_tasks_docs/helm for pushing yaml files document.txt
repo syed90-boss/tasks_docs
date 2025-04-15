@@ -1,0 +1,104 @@
+helm for pushing yaml files documentation:
+
+mkdir my-kube-yamls
+
+cd my-kube-yamls
+
+--> create two files named "deployment.yaml" "service.yaml"
+
+deployment.yaml:
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+
+
+service.yaml:
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-nginx-service
+spec:
+  type: ClusterIP
+  selector:
+    app: nginx
+  ports:
+  - port: 80
+    targetPort: 80
+
+
+cd ..
+
+helm create mychart
+
+cd mychart
+
+cp ../my-kube-yamls/*.yaml templates/
+
+rm templates/*.tpl  # optional
+
+Our folder structure should look like:
+
+mychart/
+├── Chart.yaml
+├── values.yaml
+└── templates/
+    ├── deployment.yaml
+    └── service.yaml
+
+cd ..
+
+helm package mychart
+
+--> It will create a file like:
+
+mychart-0.1.0.tgz
+
+--> create a GitHub repo named "my-helm-repo" with "Readme" file.
+
+--> for that repository , goto GitHub pages and choose "main" "/root"
+
+terminal:
+
+git clone https://github.com/YOUR_USERNAME/my-helm-repo.git
+
+cd my-helm-repo
+
+mkdir charts
+
+mv ../mychart-0.1.0.tgz charts/
+
+helm repo index charts --url https://syed90-boss.github.io/my-helm-repo/charts
+
+git add .
+
+git commit -m "Add mychart"
+
+git push origin main
+
+-------------------------
+
+helm install my-nginx-app myrepo/mychart
+
+kubectl get pods
+
+kubectl get svc
+
+

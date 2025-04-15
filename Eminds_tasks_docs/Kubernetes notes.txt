@@ -1,3 +1,9 @@
+command to create a pod manually:
+
+kubectl run my-first-pod --image=nginx
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
 Kubernetes notes:
 
 How to access pod-A from pod-B with in same namespace:

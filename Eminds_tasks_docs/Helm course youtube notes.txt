@@ -1,0 +1,188 @@
+Helm course youtube notes:
+
+--> Documentation link (https://helm.sh/docs/intro/install/) using script.
+
+--> Helm installation
+
+    curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+    chmod 700 get_helm.sh
+    ./get_helm.sh
+
+    helm version
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+helm create helloworld
+
+ls -lart | grep helloworld
+
+tree helloworld 
+
+cd helloworld
+
+vi values.yaml
+
+values.yaml:  (change this content)
+
+service:
+  type: NodePort
+  port: 80
+
+.
+.
+:wq!
+
+cd ..
+
+helm install myhelloworld helloworld
+
+helm list -a
+
+kubectl get service
+
+chrome:
+
+* paste the ip of vm:port number of helloworld nodeport
+
+* also enable "https"
+
+* will see a nginx page (which means working)
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+Kubernetes dashboard:
+
+Documentation link - https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
+
+steps:
+
+	helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+
+	helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
+
+	kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
+
+chrome: (vm box chrome)
+
+https://localhost:8443  
+
+UI displayed, but to paste the token have to some work.
+
+-------------------------------------------
+
+--> service account creation
+
+--> cluster role binding creation
+
+admin.yaml:
+
+# dashboard-adminuser.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kubernetes-dashboard
+
+bind-admin.yaml:
+
+# dashboard-adminuser-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
+
+role-binding.yaml:
+
+# dashboard-adminuser-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
+
+
+--> to access the URL (https://localhost:8443) which is running in vm machine's chrome in our local machine:
+
+
+	ssh -L 8000:localhost:8443 syed@192.168.30.99   (run this is window's command prompt, it will forward the traffic to local 
+						         machine's browser)
+
+--> kubectl apply -f admin.yaml
+
+--> kubectl apply -f bind-admin.yaml
+
+--> kubectl apply -f role-binding.yaml
+
+--> kubectl -n kubernetes-dashboard create token admin-user
+
+--> copy this token and paste in the UI of local machine's browser, it will open.
+
+terminal:
+
+   helm uninstall myhelloworld
+
+--> now no diagrams will be displayed in the UI.
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+commands chapter:
+
+--> create the above chart again.
+
+--> update the "value.yaml" script "replicaCount: 2". after changing run the next command.
+
+--> helm upgrade <release_name> <chart_name>
+
+--> helm upgrade myhelloworld helloworld
+
+--> after this when we run the command "helm list -a" , we can see the "revision as 2"
+
+--> if we want to rollback we can run the command
+
+--> helm rollback myhelloworld <revision_number>
+
+--> helm rollback myhelloworld 1
+
+--> helm list -a (will see revision as "3")
+
+Dry run command:
+
+--> helm install myhelloworld --debug --dry-run helloworld
+
+--> status will say "pending" , because we are just checking.
+
+template command:
+
+--> helm template helloworld   (similar to "dry-run" command)
+
+lint command:
+
+--> helm lint helloworld       (find any errors or misconfigurations)
+
+uninstall command:
+
+--> helm uninstall <release_name>
+
+--> helm uninstall myhelloworld
+
+--> helm list -a                (list will be empty now, because we uninstalled)
+
+
+
+
+

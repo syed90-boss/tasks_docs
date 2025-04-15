@@ -39,6 +39,10 @@ scp:
 
 scp -r master@192.168.30.32:/home/master/ansible
 
+scp from windows machine:
+
+ scp -r eminds@10.0.0.103:/home/eminds/twin-sim C:\Users\Syedibrahim
+
 -------------------------------------------------------------------------
 
 ctrl + 0 = to reset the zoom size in a chrome page

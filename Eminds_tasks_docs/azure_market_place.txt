@@ -1,0 +1,28 @@
+Azure Marketplace:
+
+	* Search for “Nextcloud”
+
+	* found "Bitnami Nextcloud"
+
+ 	* It promised:
+
+	     - Ubuntu Linux 
+
+	     - Apache web server 
+
+	     - PHP + MariaDB (handled for him!)
+
+	     - And the magical software — Nextcloud 
+ 
+        * hit “Create”.
+   
+        * Within minutes, the VM will be alive!
+   
+        * copy the public IP, opened it in the browser — and working! There was the very own cloud drive, just like Dropbox or Google Drive, but totally under our control.
+
+	* we could:
+
+	     - Upload and download files
+             - Create users and share folders
+             - Sync calendars and contacts
+             - Even use the Nextcloud mobile app
