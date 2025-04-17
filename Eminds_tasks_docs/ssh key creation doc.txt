@@ -84,4 +84,9 @@ docker commands:
 
 docker push emindsguardians/twin-sim:4nodes
 
+-------------------------------------------------------------------------
+
+ssh tunneling:
+
+ssh -i Dec.pem -L 8000:localhost:8080 ubuntu@<public-ip-of-remote-server>
 	

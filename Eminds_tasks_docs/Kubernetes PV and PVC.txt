@@ -1,0 +1,104 @@
+Kubernetes PV and PVC:
+
+--> Have to create a "persistent volume" and "persistent volume claim"
+
+pv.yaml:
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: my-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /data/pv-storage
+
+pvc.yaml:
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+
+pv_pod.yaml:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-app
+spec:
+  containers:
+    - name: app-container
+      image: nginx
+      volumeMounts:
+        - mountPath: "/usr/share/nginx/html"
+          name: storage
+  volumes:
+    - name: storage
+      persistentVolumeClaim:
+        claimName: my-pvc
+
+
+--------------------------------------------------------------------------------
+
+kubectl exec -it my-app -- /bin/sh
+
+cd /usr/share/nginx/html
+
+echo "Hello Syed's Persistent Volume!" > hello.txt
+
+exit
+
+kubectl delete pod my-app
+
+kubectl apply -f pv_pod.yaml    (creating the pod again, even though we deleted the pod, it will still have that file)
+
+kubectl exec -it my-app -- /bin/sh      (enter that newly created pod)
+
+cd cd /usr/share/nginx/html
+
+ls  
+     
+hello.txt (Hello Syed's Persistent Volume!)    (it is still having that file ,  because of pv)
+
+--------------------------------------------------------------------------------
+
+--> Let's see where the "host path" resides and the stored file:
+
+--> In the worker node:
+
+cd /data/pv-storage/
+
+ls   
+
+hello.txt (Hello Syed's Persistent Volume!)
+
+--> Let's edit the content
+
+hello.txt (Hello Syed's Persistent Volume!) (edited)
+
+exit
+
+--------------------------------------------------------------------------------
+
+--> From master node:
+
+kubectl exec -it my-app -- /bin/sh      (enter that newly created pod)
+
+cd cd /usr/share/nginx/html
+
+ls  
+     
+hello.txt (Hello Syed's Persistent Volume!) (edited)    (changes are reflected)
+
+
+

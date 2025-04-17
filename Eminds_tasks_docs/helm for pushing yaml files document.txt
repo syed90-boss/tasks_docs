@@ -95,6 +95,10 @@ git push origin main
 
 -------------------------
 
+helm repo add myrepo https://syed90-boss.github.io/my-helm-repo/charts
+
+helm repo update
+
 helm install my-nginx-app myrepo/mychart
 
 kubectl get pods

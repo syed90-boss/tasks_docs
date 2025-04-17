@@ -63,6 +63,7 @@ kubectl get pods
 Make sure volume-demo is in the Running state.
 
 ✅ Step 3: Verify the Volume Content
+
 🧪 Method 1: Read the file directly using kubectl exec
 
 kubectl exec volume-demo -- cat /data/message.txt

@@ -1,0 +1,46 @@
+# PersistentVolume (PV) example
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: s3-bucket-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain # Or Delete
+  storageClassName: s3-csi  # Customize or use default
+  mountpointForS3:  # Example with Mountpoint CSI Driver
+    bucketName: linuxbucketssyed
+    region: us-east-1
+
+# PersistentVolumeClaim (PVC) example
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: s3-bucket-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: s3-csi # Match PV's storageClassName
+
+# Pod example
+apiVersion: v1
+kind: Pod
+metadata:
+  name: s3-pod
+spec:
+  containers:
+    - name: my-container
+      image: busybox
+      volumeMounts:
+        - name: s3-bucket
+          mountPath: /mnt/s3-bucket
+          readOnly: false # Or true for read-only
+  volumes:
+    - name: s3-bucket
+      persistentVolumeClaim:
+        claimName: s3-bucket-pvc # Match PVC name

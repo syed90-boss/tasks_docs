@@ -1,0 +1,14 @@
+kubectl get pods
+kubectl get storageclass
+kubectl get pv
+kubectl get pvc
+kubectl get secret
+kubectl get secrets
+
+helm repo list
+helm list
+
+which kubectl
+will give -> /usr/bin/..
+have to give -> /usr/bin/kubectl 
+now "kubectl" version will show

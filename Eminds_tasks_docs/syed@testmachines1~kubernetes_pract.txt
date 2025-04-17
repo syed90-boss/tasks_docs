@@ -1,0 +1,70 @@
+syed@testmachines1:~/kubernetes_practice/storage_class$ kubectl apply -f all.yaml
+persistentvolume/s3-bucket-pv created
+persistentvolumeclaim/s3-bucket-pvc created
+pod/s3-pod created
+syed@testmachines1:~/kubernetes_practice/storage_class$ kubectl get storageclass
+No resources found
+syed@testmachines1:~/kubernetes_practice/storage_class$ kubectl get pv
+NAME           CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+s3-bucket-pv   10Gi       RWX            Retain           Bound    default/s3-bucket-pvc   s3-csi         <unset>                          12s
+syed@testmachines1:~/kubernetes_practice/storage_class$ kubectl get pvc
+NAME                             STATUS    VOLUME         CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+s3-bucket-pvc                    Bound     s3-bucket-pv   10Gi       RWX            s3-csi         <unset>                 14s
+syed@testmachines1:~/kubernetes_practice/storage_class$ kubectl get pods
+NAME                  READY   STATUS              RESTARTS   AGE
+s3-pod                0/1     ContainerCreating   0          20s
+syed@testmachines1:~/kubernetes_practice/storage_class$
+syed@testmachines1:~/kubernetes_practice/storage_class$ cat all.yaml
+# PersistentVolume (PV)
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: s3-bucket-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: s3-csi
+  csi:
+    driver: s3.csi.k8s.io
+    volumeHandle: s3-pv-handle
+    volumeAttributes:
+      bucketName: linuxbucketssyed
+      region: us-east-1
+      mounter: s3fs
+    nodePublishSecretRef:
+      name: s3-secret
+      namespace: default
+---
+# PersistentVolumeClaim (PVC)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: s3-bucket-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: s3-csi
+---
+# Pod Example
+apiVersion: v1
+kind: Pod
+metadata:
+  name: s3-pod
+spec:
+  containers:
+    - name: my-container
+      image: busybox
+      command: ["/bin/sh", "-c", "sleep 3600"]
+      volumeMounts:
+        - name: s3-bucket
+          mountPath: /mnt/s3-bucket
+  volumes:
+    - name: s3-bucket
+      persistentVolumeClaim:
+        claimName: s3-bucket-pvc
